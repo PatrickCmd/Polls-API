@@ -1,51 +1,3 @@
-# from django.shortcuts import render, get_object_or_404
-# from django.http import JsonResponse
-
-# from .models import Poll
-
-# def polls_list(request):
-#     MAX_OBJECTS = 20
-#     polls = Poll.objects.all()[:20]
-#     data = {
-#         "results": list(polls.values("question", "created_by_id", "pub_date"))
-#     }
-#     return JsonResponse(data)
-
-# def poll_detail(request, pk):
-#     poll = get_object_or_404(Poll, pk=pk)
-#     data = {
-#         "results": {
-#             "question": poll.question,
-#             "created_by": poll.created_by_id,
-#             "pub_date": poll.pub_date
-#         }
-#     }
-#     return JsonResponse(data)
-
-#==============APIView==========================+#
-# from rest_framework.views import APIView
-# from rest_framework.response import Response
-# from django.shortcuts import get_object_or_404
-
-# from .models import Poll
-# from .serializers import PollSerializer
-
-
-# class PollList(APIView):
-#     def get(self, request):
-#         polls = Poll.objects.all()[:20]
-#         data = PollSerializer(polls, many=True).data
-#         return Response(data)
-
-
-# class PollDetail(APIView):
-#     def get(self, request, pk):
-#         poll = get_object_or_404(Poll, pk=pk)
-#         data = PollSerializer(poll).data
-#         return Response(data)
-
-
-#=============Generics========================#
 from django.contrib.auth import authenticate
 from rest_framework import status
 from rest_framework import viewsets
@@ -57,17 +9,6 @@ from rest_framework.response import Response
 from .models import Poll, Choice, Vote
 from .serializers import PollSerializer, ChoiceSerializer, VoteSerializer, UserSerialiser
 
-
-# class PollList(ListCreateAPIView):
-#     queryset = Poll.objects.all()
-#     serializer_class = PollSerializer
-
-
-# class PollDetail(RetrieveDestroyAPIView):
-#     queryset = Poll.objects.all()
-#     serializer_class = PollSerializer
-
-#============using viewset for polllist and pollDetail views==========#
 class UserCreate(CreateAPIView):
     authentication_classes = ()
     permission_classes = ()
@@ -103,8 +44,7 @@ class PollViewSet(viewsets.ModelViewSet):
 
 
 class ChoiceList(ListCreateAPIView):
-    # queryset = Choice.objects.all()
-    # serializer_class = ChoiceSerializer
+    
     def get_queryset(self):
         queryset = Choice.objects.filter(poll_id=self.kwargs['pk'])
         return queryset
@@ -117,9 +57,6 @@ class ChoiceList(ListCreateAPIView):
             raise PermissionDenied("You can not create choice for this poll.")
         return super().post(request, *args, **kwargs)
 
-
-# class CreateVote(CreateAPIView):
-#     serializer_class = VoteSerializer
 
 
 class CreateVote(APIView):
